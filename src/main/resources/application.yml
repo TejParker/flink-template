@@ -1,0 +1,82 @@
+# Flink Template Application Configuration
+spring:
+  application:
+    name: flink-template
+  profiles:
+    active: dev
+
+# Kafka配置
+kafka:
+  bootstrap-servers: localhost:9092
+  topic: sensor_data
+  group-id: flink-consumer-group
+  auto-offset-reset: latest
+  key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+  value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+
+# 数据库配置 - 支持MySQL和PostgreSQL
+database:
+  type: mysql  # 可选: mysql, postgresql
+  mysql:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/flink_db?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+  postgresql:
+    driver-class-name: org.postgresql.Driver
+    url: jdbc:postgresql://localhost:5432/flink_db
+    username: postgres
+    password: 123456
+    hikari:
+      maximum-pool-size: 20
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+# Flink配置
+flink:
+  parallelism: 2
+  checkpoint:
+    interval: 60000
+    timeout: 30000
+    mode: EXACTLY_ONCE
+  window:
+    size: 60  # 窗口大小（秒）
+    slide: 30 # 滑动间隔（秒）
+
+# 日志配置
+logging:
+  level:
+    root: INFO
+    com.example.flink: DEBUG
+    org.apache.flink: INFO
+    org.apache.kafka: WARN
+
+---
+# 开发环境配置
+spring:
+  profiles: dev
+kafka:
+  bootstrap-servers: localhost:9092
+database:
+  type: mysql
+  mysql:
+    url: jdbc:mysql://localhost:3306/flink_dev?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+
+---
+# 生产环境配置
+spring:
+  profiles: prod
+kafka:
+  bootstrap-servers: prod-kafka-server:9092
+database:
+  type: postgresql
+  postgresql:
+    url: jdbc:postgresql://prod-db-server:5432/flink_prod 
