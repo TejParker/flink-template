@@ -272,4 +272,4 @@ CREATE TABLE sensor_statistics (
 
 如有问题，请通过以下方式联系：
 - 提交GitHub Issue
-- 邮件联系：your-email@example.com 
+- 邮件联系：laplace1015@outlook.com 
